@@ -1,0 +1,7 @@
+frase = input('Digite uma frase: ')
+count = frase.count('a')
+print(f'Essa frase possui {count} letras a')
+pstar = frase.find('a')
+print(f'A primeira letra a está na posicão {pstar}')
+pend = frase.rfind('a')
+print(f'A última letra a está na posicão {pend}')
