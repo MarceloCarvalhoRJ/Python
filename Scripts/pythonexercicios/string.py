@@ -1,4 +1,6 @@
 # fatiamento
+nome, idade = 'Marcelo', 50
+print(nome, idade, sep="#", end="...\n")
 frase = 'Curso em Video'
 print(frase[9:13])
 print(frase[9:14])
