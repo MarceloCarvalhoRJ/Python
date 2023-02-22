@@ -18,6 +18,7 @@ elif opcao == 2:
     sleep(1.5)
     
 else:
-    exit(colored('Opção inválida', 'grey'))
+    print(colored('Opção inválida', 'red'))
+    exit()
 
 print(colored('Obrigado por usar o nossos serviços!', 'cyan'))
