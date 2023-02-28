@@ -1,7 +1,7 @@
 from letreiro import letreiro, letreiro_2
 from termcolor import colored
 
-letreiro_2('BANCO MMC', 'magenta', 'light_yellow')
+letreiro('BANCO MMC', 'magenta', 'light_yellow')
 
 vlr_saque = int(input(colored('Qual valor quer sacar? R$ ', 'light_blue')))
 
