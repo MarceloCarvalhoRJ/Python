@@ -13,12 +13,39 @@ print(print(f'Vamos ordenar a lista: \n{lista}'))
 lista.sort(reverse = True)
 print(f'Vamos ordenar de forma reversa: \n{lista}')
 print(f'Essa lista em {len(lista)} elementos.')
+#ordenando a lista por ordem crescente de qtde de caracteres em cada elemento.
+linguagens = ["python", "js", "c", "java", "csharp"]
+linguagens.sort(key=lambda x: len(x))  
+print(linguagens) # ["c", "js", "java", "python", "csharp"]
+
+linguagens = ["python", "js", "c", "java", "csharp"]
+linguagens.sort(key=lambda x: len(x), reverse=True)  
+print(linguagens) # ["python", "csharp", "java", "js", "c"]
+
+#O sorted() tb tem ordem de forma similar ao .sort, a diferença que a sorted eh uma funcao e precisa ser chamada:
+linguagens = ["python", "js", "c", "java", "csharp"]
+
+print(sorted(linguagens, key=lambda x: len(x)))  # ["c", "js", "java", "python", "csharp"]
+print(sorted(linguagens, key=lambda x: len(x), reverse=True))  # ["python", "csharp", "java", "js", "c"]
 
 lista.insert(2, 0)
 print(f'Vamos insirir 0 na posicao 2: \n{lista}')
 
+#remove oitem pelo argumento e não pela posição
+linguagens = ["python", "js", "c", "java", "csharp"]
+
+linguagens.remove("c")
+
+print(linguagens)  # ["python", "js", "java", "csharp"]
+
 lista.pop()
 print(f'Vamos apagar o ultimo elemento da lista: \n{lista}')
+
+ #informa em qual posicao o elemento está.
+linguagens = ["python", "js", "c", "java", "csharp"]
+
+print(linguagens.index("java"))  # 3
+print(linguagens.index("python"))  # 0
 
 lista.remove(8) #elimina o elemento nao a posicao
 print(f'Vamos apagar o número 8 da lista: \n{lista}')
@@ -53,3 +80,10 @@ a = [2,6,7,4]
 b = a[:] #com o fatiamento b é somente uma cópia
 b[2] = 0 #muda o valor somente na lista b.
 print(f'lista a {a} \nLista b {b}')
+
+#invertendo a ordem da lista
+linguagens = ["python", "js", "c", "java", "csharp"]
+
+linguagens.reverse()
+
+print(linguagens)  # ["csharp", "java", "c", "js", "python"]

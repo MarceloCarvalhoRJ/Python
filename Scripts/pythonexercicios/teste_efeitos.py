@@ -1,17 +1,26 @@
-import time
-import curses
+'''lista = ([1, 9], [0, 'Python', 25])
+print(lista[0][1])
+print(lista[1][1])'''
 
-def main(stdscr):
-    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+veiculos = {
+    'Brand' : 'Ford', 
+    'Model:' : 'Mustang',
+    'Year' : 1998,
+    }
+for x in veiculos:
+    print(x, ':', veiculos[x])  # 1 modo
 
-    while True:
-        stdscr.clear()
-        stdscr.addstr(10, 10, "Bem-vindo ao meu programa Python!", curses.color_pair(1))
-        stdscr.refresh()
-        time.sleep(0.5)
-        stdscr.clear()
-        stdscr.refresh()
-        time.sleep(0.5)
+print('.' * 40)
 
-if __name__ == "__main__":
-    curses.wrapper(main)
+for x in veiculos.values():     # 2 modo
+    print(x)
+
+print('.' * 40)
+
+veiculos['Color:'] = 'Yellow'
+veiculos['Km:'] = '80.000'
+veiculos['Year'] = 2020
+for pos, value in veiculos.items():  # 3 modo
+    print(pos, ':', value)
+
+
