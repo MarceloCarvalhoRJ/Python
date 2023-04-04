@@ -1,0 +1,15 @@
+Desde que a função split procura por espaços e trata as palavras como objetos
+separados por espaços, nós trataremos as palavras “sutilmente!” e “sutil” como
+palavras diferentes e criaremos entradas específicas no dicionário para cada palavra.
+Além disso, já que o arquivo tem letras maiúsculas, nós trataremos “quem” e
+“Quem” como palavras diferentes, com diferentes contadores.
+Podemos resolver os dois problemas utilizando os métodos de strings lower,
+punctuation, e
+translate. O translate é o mais sutil dos métodos. Aqui está a documentação
+para o translate:
+Troca os caracteres em fromstr com o caractere na mesma posição em tostr e
+apaga todos os caracteres que estão em deletestr. fromstr e tostr podem ser
+strings vazias e o parâmetro deletestr pode ser omitido.
+Nós não iremos especificar o tostr mas utilizaremos o parâmetro deletestr para
+retirar todas as pontuações. Nós até iremos deixar o Python nos mostrar a lista
+de caracteres que são considerados “pontuação”:

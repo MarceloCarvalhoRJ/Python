@@ -1,3 +1,4 @@
+
 # fatiamento
 nome, idade = 'Marcelo', 50
 print(nome, idade, sep="#", end="...\n")
