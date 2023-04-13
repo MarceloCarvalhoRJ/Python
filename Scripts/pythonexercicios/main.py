@@ -24,10 +24,22 @@ def fatorial(number):
         fat *= i
     return fat'''
 
-import os
+
 def limpa_tela():
-    os.system('cls' if os.name == 'nt' else 'clear')
     '''
     #limpa a tela do terminal
     '''
+    import os
+    os.system('cls' if os.name == 'nt' else 'clear')
+  
 
+def isfloat(num):
+    n = str(num).strip()
+    if n.count('.') == 1:
+        num = n.replace('.', '')
+        return True if num.isnumeric() else False
+    else:
+        return False
+    
+def moeda(p, coin='R$'):
+    return f'{coin}{p:.2f}'.replace('.', ',')

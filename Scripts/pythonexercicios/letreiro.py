@@ -19,10 +19,10 @@ def letreiro(texto, cor1, cor2):
     print(colored(' ' + '=' * 35 + ' ', cor2))
 
 def letreiro_2(texto, cor1, cor2):
-    print(colored('-' * 37, cor2))
+    print(colored('-' * len(texto), cor2))
     print(colored((texto + emojize(' :grinning_face_with_big_eyes:')).center(35), cor1))
     #print(colored(f'|{texto:^36}|', cor))
-    print(colored('-' * 37, cor2))
+    print(colored('-' * len(texto), cor2))
 
 def letreiro_fundo(texto, cor_fundo):
     """
@@ -31,10 +31,12 @@ def letreiro_fundo(texto, cor_fundo):
     -> recebe 2 argumentos, sendo o texto e a cor de fundo (usar on_'nome da cor' ex: on_green).
     -> retorna o letreiro personalizado
     """
-    print(colored('~' * (len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
-    print(colored((texto).center(len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
-    #print(colored(f'|{texto:^36}|', cor))
-    print(colored('~' * (len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
+
+    if __name__ == '__main__': #serve para nao carregar o que estiver abaixo do if quando chamar a funcao.
+        print(colored('~' * (len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
+        print(colored((texto).center(len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
+        #print(colored(f'|{texto:^36}|', cor))
+        print(colored('~' * (len(texto) + 4), cor_fundo, attrs=['reverse', 'blink']))
    
 
 
