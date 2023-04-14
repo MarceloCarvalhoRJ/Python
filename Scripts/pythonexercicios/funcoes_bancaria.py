@@ -278,50 +278,86 @@ def lista_usuarios(cadastro_usuarios):
 
 
 def cadastro_conta(cadastro_usuarios, cadastro_contas):
-    AGENCIA = '0001'
-    conta = len(cadastro_contas) + 1
+    """
+    Essa função é responsável por criar uma nova conta bancária para um usuário já cadastrado.
 
+    Args:
+        cadastro_usuarios (list): Uma lista com os dados de cadastro de todos os usuários.
+        cadastro_contas (list): Uma lista com os dados de todas as contas bancárias.
+
+    Returns:
+        None
+
+    """
+    AGENCIA = '0001'
+    conta = len(cadastro_contas) + 1 # contador para cadastrar um nr de conta diferente.
+
+    # Mensagem informando como voltar para o menu principal
     print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
+    # Mensagem com os dados da agência e conta corrente da nova conta
     print(f'\033[33mAgencia:\033[m {AGENCIA} \n\033[33mConta Corrente:\033[m {conta}')
 
     while True:
         cpf_usuario = input(colored("Informe o CPF (somente números): ", 'light_cyan')).strip()
 
+        # Verifica se o usuário deseja voltar para o menu principal digitando 0 e apertando enter.
         if volta_menu(cpf_usuario):
             return
         
+        # Verifica se o CPF informado é somente numeros e no total de 11 digitos.
         if is_numeric(cpf_usuario, 11):
             break      
 
     cpf_usuario = format_cpf(cpf_usuario)
+
+    # Verifica se o CPF informado está cadastrado
     for usuario in cadastro_usuarios:
         if cpf_usuario == usuario['cpf']:
             cadastro_contas.append({'agencia': AGENCIA, 'conta': conta, 'usuario': cpf_usuario})
             
+            # Mensagem informando que a conta foi criada com sucesso
             print()
             print(colored('=== Conta criada com sucesso! ===', 'light_green'))
             sleep(1)
             return
     
+    # Mensagem de erro caso o CPF não esteja cadastrado
     print(colored('CPF não encontrado no cadastro de usuários. Certifique-se que digitou os 11 digitos.', 'light_magenta'))
     sleep(1)
-    
+
     
 def lista_contas(cadastro_contas):
+    """
+    Essa função é responsável por exibir uma lista com todas as contas bancárias cadastradas.
+
+    Args:
+        cadastro_contas (list): Uma lista com os dados de todas as contas bancárias.
+
+    Returns:
+        None
+
+    """
+    # Título da lista de contas
     print()
     print('\033[32m-\033[0m' * 6, '«««  \033[32mLista de Contas\033[0m  »»»', '\033[32m-\033[0m' * 6)
 
+    # Verifica se não existem contas cadastradas
     if len(cadastro_contas) == 0:
         print('\nNao existe contas cadastradas!\n') 
     else:
+        # Percorre a lista de contas e exibe os dados (chave e valor) de cada uma
         for conta in cadastro_contas:
             for key, value in conta.items():
                 print(f'\033[33m{key}:\033[0m {value}\n')
+            # Adiciona uma linha separadora entre as contas (exceto a última)
             if conta is not cadastro_contas[-1]:
                 print(colored('-' * 41, 'light_yellow'))
+            # Espera 0.3 segundos antes de exibir a próxima conta
             sleep(.3)
 
+    # Mensagem informando o fim da lista de contas
     print('\033[32m-\033[0m' * 8, '«««  \033[32mFim da Lista\033[0m  »»»', '\033[32m-\033[0m' * 7)
+    # Aguarda a pressionar da tecla ENTER para retornar ao menu principal
     input(colored("Pressione a tecla ENTER para retornar ao menu principal.", 'grey'))
 
 
@@ -336,6 +372,17 @@ def format_cpf(id):
 
   
 def format_data(date):
+    """
+    Essa função é responsável por formatar uma data no formato DDMMYYYY para o formato DD/MM/YYYY.
+
+    Args:
+        date (str): Uma string contendo uma data no formato DDMMYYYY.
+
+    Returns:
+        str: A data formatada no formato DD/MM/YYYY.
+
+    """
+    # Formata a data no formato DD/MM/YYYY usando o a tecnica de slicing
     return f'{date[:2]}/{date[2:4]}/{date[4:]}'
 
 
