@@ -12,70 +12,114 @@ def limpa_tela():
 
 
 def moeda(p, coin='R$'):
+    """
+    Retorna uma string formatada com o valor monetário e a moeda especificada.
+
+    Args:
+        p (float): O valor monetário a ser formatado.
+        coin (str, optional): A moeda a ser utilizada na formatação. Valor padrão é 'R$'.
+
+    Returns:
+        str: A string formatada com o valor monetário e a moeda especificada.
+    """
     return f'{coin} {p:.2f}'.replace('.', ',')
 
 
-def deposito(saldo, qtde_depositos):
+def deposito(saldo, relacao_depositos):
+    """Realiza um depósito na conta bancária especificada.
 
+    Args:
+        saldo (float): O saldo atual da conta bancária.
+        qtde_depositos (str): A string que armazena a quantidade e valores de depósitos feitos na conta.
+
+    Returns:
+        Tuple[float, str]: Uma tupla contendo o novo saldo da conta bancária e a string 'qtde_depositos' atualizada.
+    """
+    # Entra em um loop infinito para receber o valor do depósito até que seja válido
+    print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
     while True:
-            vlr_deposito = round(float(input('\nQual o valor do deposito? R$ ')), 2)
+        try:
+            vlr_deposito = float(input(colored('\nQual o valor do depósito? R$ ', 'light_magenta')))
+
+            if volta_menu(vlr_deposito): #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+                break
+            
             if vlr_deposito > 0:
+                # Adiciona o valor do depósito ao saldo da conta
                 saldo += vlr_deposito
-                qtde_depositos += f"{moeda(vlr_deposito)}\n"
+                # Atualiza a string 'relacao_depositos' com o valor do novo depósito
+                relacao_depositos += f"{moeda(vlr_deposito)}\n"
                 print(colored('💰 Depósito realizado com sucesso! 💰', 'light_yellow'))
-                sleep(.5)
-                break
-            else:   
-                print('valor inválido. Tente novamente.')
-
-    return saldo, qtde_depositos
-
-
-def saque(numero_saques, vlr_saque, saldo, qtde_saques):
-     LIMITE_SAQUES = 3
-
-     while True:
-            vlr_saque = int(input('Quer sacar quanto? R$ '))
-            if numero_saques >= LIMITE_SAQUES:
-                print('Quantidade de saques acima do limite diário.')
-                sleep(1)
-                break
-            if vlr_saque <= 0:
-                print('Valor inválido. Tente novamente.')
-            elif vlr_saque > 500:
-                print(colored('Valor de saque acima do limite de R$ 500', 'grey'))
-            elif saldo < vlr_saque:
-                print(colored(f'Saldo insuficiente! Seu saldo atual é {moeda(saldo)}', 'light_red'))
-                sleep(2)
+                sleep(.5) #funcao moeda, formata por padrao o numero em moeda BRL.
                 break
             else:
-                numero_saques += 1
-                saldo -= vlr_saque
-                qtde_saques += f"(\033[31m-\033[m){moeda(vlr_saque)}\n"
-                print(colored('Aguarde a contagem das notas \n', 'light_magenta'), end = '')
-                for i in range(1, 7):
-                    # a função flush() é adicionada como argumento para a função print(). Isso força o buffer de saída a ser limpo imediatamente após cada impressão, permitindo que os emojis sejam exibidos um de cada vez. 
-                    print('💵 ', end = '', flush = True) 
-                    sleep(0.3)
-                print(colored(f'\nOperacão realizada com sucesso!', 'light_yellow'))
-                sleep(.7)
-                break
-     return numero_saques, vlr_saque, saldo, qtde_saques
+                # Informa ao usuário que o valor é inválido e pede que insira novamente
+                print('O valor deve ser maior do que zero. Tente novamente.')
+        except ValueError:
+            # Informa ao usuário que o valor é inválido e pede que insira novamente
+            print('Digite somente numeros. Tente novamente.')
+        
+
+    # Retorna uma tupla contendo o novo saldo da conta bancária e a string 'qtde_depositos' atualizada
+    return saldo, relacao_depositos
 
 
-def gerar_extrato(qtde_depositos, qtde_saques, saldo):
+def saque(numero_saques, vlr_saque, saldo, relacao_saques):
+     LIMITE_SAQUES = 3
+     print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
+
+     while True:
+            try:
+                vlr_saque = int(input(colored('Quer sacar quanto? R$ ', 'light_blue')))
+
+                if volta_menu(vlr_saque):
+                    break
+
+                if numero_saques >= LIMITE_SAQUES:
+                    print('Quantidade de saques acima do limite diário.')
+                    sleep(1)
+                    break
+                if vlr_saque <= 0:
+                    print('Valor tem que ser maior que 0. Tente novamente.')
+                elif vlr_saque > 500:
+                    print(colored('Valor de saque acima do limite de R$ 500', 'grey'))
+                elif saldo < vlr_saque:
+                    print(f"Saldo insuficiente! Seu saldo atual é {colored(moeda(saldo), 'light_yellow')}")
+                    sleep(2)
+                    break
+                else:
+                    numero_saques += 1
+                    saldo -= vlr_saque
+                    relacao_saques += f"(\033[31m-\033[m){moeda(vlr_saque)}\n"
+                    print(colored('Aguarde a contagem das notas \n', 'light_magenta'), end = '')
+                    for i in range(1, 7):
+                        # a função flush() é adicionada como argumento para a função print(). Isso força o buffer de saída a ser limpo imediatamente após cada impressão, permitindo que os emojis sejam exibidos um de cada vez. 
+                        print('💵 ', end = '', flush = True) 
+                        sleep(0.3)
+                    print(colored(f'\nOperacão realizada com sucesso!', 'light_yellow'))
+                    sleep(.7)
+                    break
+
+            except ValueError:
+                print('Digite somente numero inteiro. Tente novamente.')        
+                 
+     return numero_saques, vlr_saque, saldo, relacao_saques
+
+
+def gerar_extrato(relacao_depositos, relacao_saques, saldo):
     today = f"{date.today().day}-{date.today().month}-{date.today().year}"
     print(f"\n+{colored(' EXTRATO ', 'light_green'):.^40}+")
     sleep(.5) 
     print(f"\033[33m{today:^34}\033[0m")
-    if not qtde_saques and not qtde_depositos: 
+    if not relacao_saques and not relacao_depositos: 
         print('\nNão foram realizadas movimentações.\n')
     else:
-        print(f"{colored('Depositos', 'cyan')} \n{qtde_depositos}")
-        print(f"{colored('Saques:', 'cyan')} \n{qtde_saques}\n")
+        print(f"{colored('Depositos', 'cyan')} \n{relacao_depositos}")
+        print(f"{colored('Saques:', 'cyan')} \n{relacao_saques}\n")
     print(f"{colored('Saldo Atual:', 'yellow')} {moeda(saldo)}")
     sleep(1)
     print(f"+{'.':.^31}+")
+    input(colored("Pressione a tecla ENTER para retornar ao menu principal.", 'grey'))
 
 
 def cadastro_usuario(cadastro_usuarios):
@@ -177,7 +221,7 @@ def cadastro_conta(cadastro_usuarios, cadastro_contas):
             sleep(1)
             return
     
-    print(colored('CPF não encontrado no cadastro de usuários. Certifique-se que  digitou os 11 digitos.', 'light_magenta'))
+    print(colored('CPF não encontrado no cadastro de usuários. Certifique-se que digitou os 11 digitos.', 'light_magenta'))
     sleep(1)
     
     
@@ -213,8 +257,8 @@ def format_data(date):
     return f'{date[:2]}/{date[2:4]}/{date[4:]}'
 
 
-def volta_menu(cpf):
-    if cpf == '0':
+def volta_menu(vlr):
+    if vlr == '0' or vlr == 0:
         print(colored("Operação cancelada pelo usuário.", 'light_yellow'))
         sleep(.5)
         return True   
@@ -229,7 +273,7 @@ def is_numeric(num, tamanho = 11):
             print(f"{num} deve ter {tamanho} dígitos. Tente novamente.")
             sleep(.5)
     else:
-        print(colored("Somente números devem ser inseridos. Tente novamente.", 'light_blue'))  
+        print("Somente números devem ser inseridos. Tente novamente.")  
         sleep(.5)
 
 if __name__ == '__main__':

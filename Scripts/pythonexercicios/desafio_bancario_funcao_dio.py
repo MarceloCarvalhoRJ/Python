@@ -13,24 +13,23 @@ menu = """
 \033[36mEscolha uma opção =>\033[0m """
 
 saldo = 0
-qtde_depositos, qtde_saques = '', ''
+relacao_depositos, relacao_saques = '', ''
 limite = 500
 numero_saques = 0
 vlr_saque = 0
-2
+
 while True:
 
     opcao = int(input(menu))
 
     if opcao == 1:
-        saldo, qtde_depositos = deposito(saldo, qtde_depositos)
+        saldo, relacao_depositos = deposito(saldo, relacao_depositos)
 
     elif opcao == 2:
-        numero_saques, vlr_saque, saldo, qtde_saques = saque(numero_saques = numero_saques, vlr_saque = vlr_saque, saldo = saldo, qtde_saques = qtde_saques)
+        numero_saques, vlr_saque, saldo, relacao_saques = saque(numero_saques = numero_saques, vlr_saque = vlr_saque, saldo = saldo, relacao_saques = relacao_saques)
         
     elif opcao == 3:
-        gerar_extrato(qtde_depositos, qtde_saques, saldo)
-        
+        gerar_extrato(relacao_depositos, relacao_saques, saldo)
         
     elif opcao == 0:
         break
