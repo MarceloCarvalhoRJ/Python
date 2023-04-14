@@ -5,7 +5,7 @@ from datetime import date
 def limpa_tela():
     import os
     '''
-    #limpa a tela do terminal
+    limpa a tela do terminal
     '''
     
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -65,60 +65,126 @@ def deposito(saldo, relacao_depositos):
 
 
 def saque(numero_saques, vlr_saque, saldo, relacao_saques):
-     LIMITE_SAQUES = 3
-     print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
+    """
+    Realiza o saque de um determinado valor a partir do saldo disponível,
+    desde que sejam atendidas algumas condições, como quantidade de saques
+    diários e valor máximo de saque.
 
-     while True:
-            try:
-                vlr_saque = int(input(colored('Quer sacar quanto? R$ ', 'light_blue')))
+    Args:
+        numero_saques (int): o número de saques já realizados naquele dia.
+        vlr_saque (float): o valor a ser sacado.
+        saldo (float): o saldo disponível para saque.
+        relacao_saques (str): uma string com os valores sacados e depositados.
 
-                if volta_menu(vlr_saque):
-                    break
+    Returns:
+        tuple: uma tupla contendo o número de saques realizados, o valor sacado,
+        o saldo restante e a relação de saques atualizada.
 
-                if numero_saques >= LIMITE_SAQUES:
-                    print('Quantidade de saques acima do limite diário.')
-                    sleep(1)
-                    break
-                if vlr_saque <= 0:
-                    print('Valor tem que ser maior que 0. Tente novamente.')
-                elif vlr_saque > 500:
-                    print(colored('Valor de saque acima do limite de R$ 500', 'grey'))
-                elif saldo < vlr_saque:
-                    print(f"Saldo insuficiente! Seu saldo atual é {colored(moeda(saldo), 'light_yellow')}")
-                    sleep(2)
-                    break
-                else:
-                    numero_saques += 1
-                    saldo -= vlr_saque
-                    relacao_saques += f"(\033[31m-\033[m){moeda(vlr_saque)}\n"
-                    print(colored('Aguarde a contagem das notas \n', 'light_magenta'), end = '')
-                    for i in range(1, 7):
-                        # a função flush() é adicionada como argumento para a função print(). Isso força o buffer de saída a ser limpo imediatamente após cada impressão, permitindo que os emojis sejam exibidos um de cada vez. 
-                        print('💵 ', end = '', flush = True) 
-                        sleep(0.3)
-                    print(colored(f'\nOperacão realizada com sucesso!', 'light_yellow'))
-                    sleep(.7)
-                    break
+    Raises:
+        ValueError: caso o valor de saque não seja um número inteiro.
 
-            except ValueError:
-                print('Digite somente numero inteiro. Tente novamente.')        
+    Examples:
+        >> saque(2, 100, 500, "")
+        (3, 100, 400, '(-R$100)\n')
+    """
+
+    LIMITE_SAQUES = 3  # define a constante LIMITE_SAQUES com o valor 3
+    
+    print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
+
+    while True:
+        try:
+            # solicita ao usuário o valor do saque e converte para inteiro
+            vlr_saque = int(input(colored('Quer sacar quanto? R$ ', 'light_blue')))
+
+            # verifica se o usuário deseja voltar ao menu principal e encerra o loop
+            if volta_menu(vlr_saque):
+                break
+
+            # verifica se o número de saques é maior ou igual ao limite de saques permitido e encerra o loop
+            if numero_saques >= LIMITE_SAQUES:
+                print('Quantidade de saques acima do limite diário.')
+                sleep(1)
+                break
+
+            if vlr_saque <= 0:
+                print('Valor tem que ser maior que 0. Tente novamente.')
+            
+            elif vlr_saque > 500:
+                print(colored('Valor de saque acima do limite de R$ 500', 'grey'))
+            
+            elif saldo < vlr_saque:
+                print(f"Saldo insuficiente! Seu saldo atual é {colored(moeda(saldo), 'light_yellow')}")
+                sleep(2)
+                break
+            else:
+                # contador para o número de saques realizados
+                numero_saques += 1
+                # subtrai o valor do saque do saldo atual
+                saldo -= vlr_saque
+                # adiciona a relação de saques uma string formatada no padrao moeda BRL indicando o valor do saque 
+                relacao_saques += f"(\033[31m-\033[m){moeda(vlr_saque)}\n"
+               
+                print(colored('Aguarde a contagem das notas \n', 'light_magenta'), end = '')
+                
+                for i in range(1, 7):
+                    print('💵 ', end = '', flush = True) 
+                    sleep(0.3)
+                
+                print(colored(f'\nOperacão realizada com sucesso!', 'light_yellow'))
+                sleep(.7)
+                break
+
+        # trata a exceção ValueError, caso o usuário digite um valor que não seja um número inteiro
+        except ValueError:
+            print('Digite somente numero inteiro. Tente novamente.')        
                  
-     return numero_saques, vlr_saque, saldo, relacao_saques
+    # Retorna o número de saques, o valor sacado, o saldo atualizado e a relação de saques realizados para serem usados em outras funções.            
+    return numero_saques, vlr_saque, saldo, relacao_saques
 
 
 def gerar_extrato(relacao_depositos, relacao_saques, saldo):
+    """
+    Gera um extrato bancário com as relações de depósitos e saques e o saldo atual.
+
+    Parâmetros:
+    -----------
+    relacao_depositos : str
+        String contendo a relação de depósitos realizados.
+    relacao_saques : str
+        String contendo a relação de saques realizados.
+    saldo : float
+        Saldo atual da conta.
+
+    Retorna:
+    --------
+    None
+    """
+
+    # Obtém a data atual.
     today = f"{date.today().day}-{date.today().month}-{date.today().year}"
+
     print(f"\n+{colored(' EXTRATO ', 'light_green'):.^40}+")
-    sleep(.5) 
+    sleep(.5)
+
     print(f"\033[33m{today:^34}\033[0m")
+
+    # Verifica se não houve nenhuma movimentação na conta.
     if not relacao_saques and not relacao_depositos: 
         print('\nNão foram realizadas movimentações.\n')
     else:
+        # Imprime a relação de depósitos.
         print(f"{colored('Depositos', 'cyan')} \n{relacao_depositos}")
+
+        # Imprime a relação de saques.
         print(f"{colored('Saques:', 'cyan')} \n{relacao_saques}\n")
+
+    # Imprime o saldo atual formatada em moeda BRL pela funcao moeda().
     print(f"{colored('Saldo Atual:', 'yellow')} {moeda(saldo)}")
     sleep(1)
+
     print(f"+{'.':.^31}+")
+
     input(colored("Pressione a tecla ENTER para retornar ao menu principal.", 'grey'))
 
 
@@ -134,65 +200,81 @@ def cadastro_usuario(cadastro_usuarios):
     """
     print(colored('Para voltar ao menu principal, digite 0 a qualquer momento.', 'grey'))
 
-    while True: #enquanto o usuario não inserir os 11 digitos do CPF o loop continua.
+    #O loop só é encerrado qdo o usuario inserir os 11 digitos do CPF.
+    while True: 
         cpf = input(colored("Informe o CPF (somente números): ", 'light_cyan')).strip()
 
-        if volta_menu(cpf): #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+        #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+        if volta_menu(cpf): 
             return    
-        
-        if is_numeric(cpf, 11): #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros. 
+        #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros. 
+        if is_numeric(cpf, 11): 
             break
-    
-    cpf = format_cpf(cpf) #funcao para formatar em padrão CPF brasileiro o número inserido pelo usuario .
-
-    for usuario in cadastro_usuarios: #verifica em cada dicionário dentro da lista se o cpf cadastrado á existe.
+    #funcao para formatar o numero fornecido pelo usuário no padrão CPF brasileiro.
+    cpf = format_cpf(cpf) 
+    #verifica em cada dicionário dentro da lista se o cpf cadastrado já existe.
+    for usuario in cadastro_usuarios: 
         if cpf == usuario['cpf']:
             print(colored('Já existe usuário com esse CPF!', 'light_magenta'))
             sleep(1)
             return
         
     nome = input(colored('Informe o nome completo: ', 'light_cyan')).strip()
-
-    if volta_menu(nome): #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+    #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+    if volta_menu(nome): 
         return 
-    
-    while True: #enquanto o usuario não inserir os 6 digitos da data de nasc. o loop continua.
+    #enquanto o usuario não inserir os 6 digitos da data de nascimento o loop continua.
+    while True: 
         data_nascimento = input(colored('Informe a data de nascimento (DDMMAA). ', 'light_cyan')).strip()
 
         if volta_menu(data_nascimento):
             return
-        
-        if is_numeric(data_nascimento, tamanho=6): #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros. 
+        #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros.
+        if is_numeric(data_nascimento, tamanho=6):  
             break 
     
     endereco = input(colored("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ", 'light_cyan')).strip()
     if volta_menu(endereco):
         return 
-    
-    cadastro_usuarios.append({'cpf': cpf, 'nome': nome, 'data_nascimento': format_data(data_nascimento), 'endereço': endereco}) #cria um dicionário dentro da lista com as informacões de cada usuário. format_data -> formata o nr. inserido em dd/mm/aa.
+    #cria um dicionário dentro da lista cadastro_usurios com as informacões de cada usuário. format_data() -> formata data inserida pelo usuário em dd/mm/aa.
+    cadastro_usuarios.append({'cpf': cpf, 'nome': nome, 'data_nascimento': format_data(data_nascimento), 'endereço': endereco}) 
 
     print()
     print(colored("=== Usuário criado com sucesso! ===", 'light_yellow'))
     sleep(1)
-
+    # retorna a lista cadastro_usuarios atualizada para ser usada por outras funções.
     return cadastro_usuarios
 
 
 def lista_usuarios(cadastro_usuarios):
+    """
+    Exibe uma lista com os usuários cadastrados, mostrando suas informações pessoais.
+
+    Args:
+        cadastro_usuarios (list): lista de dicionários com as informações dos usuários.
+    """
     print()
     print('\033[33m-\033[0m' * 16, '«««  \033[33mLista de usuários\033[0m  »»»', '\033[33m-\033[0m' * 16)
 
+    # Verifica se a lista está vazia
     if len(cadastro_usuarios) == 0:
         print('\nNao existe usuários cadastrados!\n') 
     else:
+        # Itera sobre a lista de cadastro_usuários
         for usuario in cadastro_usuarios:
+            # Itera sobre o dicionário do usuário para imprimir a chave e o valor.
             for key, value in usuario.items():
                 print(f'\033[36m{key}:\033[0m {value}\n')
+            # Imprime uma linha de separação entre os usuários, exceto no último
             if usuario is not cadastro_usuarios[-1]:
                 print(colored('-' * 61, 'light_yellow'))
+            # Aguarda um curto período para melhorar a legibilidade
             sleep(.3)
+    
+    # Imprime uma mensagem de fim de lista
     print('\033[33m-\033[0m' * 19, '«««  \033[33mFim da Lista\033[0m  »»»', '\033[33m-\033[0m' * 18)
-    input(colored("Pressione a tecla ENTER para retornar ao menu principal.", 'grey')) # aguarda o usuário pressionar a tecla 'espaço'
+    # Aguarda a entrada do usuário para continuar no intuito de melhorar a visualizacao da lista.
+    input(colored("Pressione a tecla ENTER para retornar ao menu principal.", 'grey')) 
 
 
 def cadastro_conta(cadastro_usuarios, cadastro_contas):
@@ -258,6 +340,15 @@ def format_data(date):
 
 
 def volta_menu(vlr):
+    """
+    Verifica se o valor de entrada é igual a '0' e, se for, retorna uma mensagem de operação cancelada.
+
+    Args:
+        vlr (int or str): O valor de entrada a ser verificado.
+
+    Returns:
+        bool: True se o valor de entrada for igual a '0', False caso contrário.
+    """
     if vlr == '0' or vlr == 0:
         print(colored("Operação cancelada pelo usuário.", 'light_yellow'))
         sleep(.5)
@@ -265,14 +356,28 @@ def volta_menu(vlr):
 
 
 def is_numeric(num, tamanho = 11):
+    """
+    Verifica se a string inserida pelo usuário contém apenas números e possui o tamanho correto.
+
+    Args:
+        num (str): A string inserida pelo usuário.
+        tamanho (int): O tamanho correto que a string deve ter (padrão = 11 para CPF).
+
+    Returns:
+        bool: Retorna True se a string é numérica e tem o tamanho correto, caso contrário retorna False e exibe uma mensagem de erro.
+    """
+    #Verifica se a string 'num' contém apenas caracteres numéricos
     if num.isnumeric():
+        # Verifica se a string 'num' possui o tamanho correto, definido pelo parâmetro 'tamanho'
         if len(num) == tamanho:
             return True
         else:
+            # Caso a string não possua o tamanho correto, exibe uma mensagem de erro e aguarda meio segundo
             num = 'CPF' if tamanho == 11 else 'Data de Nascimento'
             print(f"{num} deve ter {tamanho} dígitos. Tente novamente.")
             sleep(.5)
     else:
+        # Caso a string não possua apenas caracteres numéricos, exibe uma mensagem de erro e aguarda meio segundo
         print("Somente números devem ser inseridos. Tente novamente.")  
         sleep(.5)
 
@@ -280,4 +385,4 @@ if __name__ == '__main__':
     #print(deposito())
     #print(cadastro_usuario())
     #print(cadastro_conta())
-    help(cadastro_usuario)
+    help(saque)
