@@ -100,18 +100,19 @@ def saque(numero_saques, vlr_saque, saldo, relacao_saques):
             # verifica se o usuário deseja voltar ao menu principal e encerra o loop
             if volta_menu(vlr_saque):
                 break
-
+            
             # verifica se o número de saques é maior ou igual ao limite de saques permitido e encerra o loop
             if numero_saques >= LIMITE_SAQUES:
                 print('Quantidade de saques acima do limite diário.')
                 sleep(1)
                 break
-
-            if vlr_saque <= 0:
-                print('Valor tem que ser maior que 0. Tente novamente.')
+            
+            # verifique se o valor inserido pelo usuário eh positivo e multiplo de 10.
+            if vlr_saque <= 0 or vlr_saque % 10 != 0:
+                print('Valor tem que ser maior que 0 e multiplo de 10. Tente novamente.')
             
             elif vlr_saque > 500:
-                print(colored('Valor de saque acima do limite de R$ 500', 'grey'))
+                print('Valor de saque acima do limite de R$ 500')
             
             elif saldo < vlr_saque:
                 print(f"Saldo insuficiente! Seu saldo atual é {colored(moeda(saldo), 'light_yellow')}")

@@ -1,6 +1,6 @@
 '''
         ««« Projeto do Curso de Python da Dio.me »»»
-        
+
 -> Este programa aborda vários conceitos fundamentais de Python, como: 
 - Loop: utilização de while e for para repetição de código
 - Condicionais: uso de if, elif e else para executar diferentes trechos de código
@@ -42,6 +42,7 @@ limpa_tela()
 
 # Cria um letreiro de boas-vindas com as cores "magenta" e "light_blue"
 letreiro('Bem vindo ao Banco MMC', 'magenta', 'light_blue') 
+
 
 # Define um menu com opções numeradas, utilizei a tabela de cores ANSI.
 menu = """
