@@ -1,13 +1,13 @@
 from time import sleep
 from termcolor import colored
 from datetime import date
+import json
 
 def limpa_tela():
     import os
     '''
     limpa a tela do terminal
     '''
-    
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
@@ -219,11 +219,19 @@ def cadastro_usuario(cadastro_usuarios):
             print(colored('Já existe usuário com esse CPF!', 'light_magenta'))
             sleep(1)
             return
-        
-    nome = input(colored('Informe o nome completo: ', 'light_cyan')).strip()
-    #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
-    if volta_menu(nome): 
-        return 
+    while True:    
+        nome = input(colored('Informe o nome completo: ', 'light_cyan')).strip().title()
+        #funcao para retornar ao menu principal caso o usuário desista do cadastro, basta digitar '0' e apertar enter.
+        if volta_menu(nome): 
+            return
+        #retorna para o input caso a variavel nome esteja vazia.
+        if len(nome) == 0:
+            print('Por favor, preencha o campo nome')
+        #retorna para o input caso a variavel nome não tenha letras.
+        elif nome.isnumeric():
+            print('Parece que você não digitou letras no nome. Por favor, tente novamente')
+        else:
+            break
     #enquanto o usuario não inserir os 6 digitos da data de nascimento o loop continua.
     while True: 
         data_nascimento = input(colored('Informe a data de nascimento (DDMMAA). ', 'light_cyan')).strip()
@@ -233,12 +241,21 @@ def cadastro_usuario(cadastro_usuarios):
         #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros.
         if is_numeric(data_nascimento, tamanho=6):  
             break 
-    
-    endereco = input(colored("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ", 'light_cyan')).strip()
-    if volta_menu(endereco):
-        return 
+
+    while True:
+        endereco = input(colored("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ", 'light_cyan')).strip()
+        #retorna ao menu se o usuario digitar 0.
+        if volta_menu(endereco):
+            return
+        #valida se o usuario separou por '-': logadouro - bairro - cidade/sigla.
+        if endereco.count('-') != 2:
+            print('Logadouro, Bairro e Cidade/sigla devem estar separados por "-"')
+        else:
+            break
     #cria um dicionário dentro da lista cadastro_usurios com as informacões de cada usuário. format_data() -> formata data inserida pelo usuário em dd/mm/aa.
-    cadastro_usuarios.append({'cpf': cpf, 'nome': nome, 'data_nascimento': format_data(data_nascimento), 'endereço': endereco}) 
+    cadastro_usuarios.append({'cpf': cpf, 'nome': nome, 'data_nascimento': format_data(data_nascimento), 'endereco': endereco})
+
+    grava_cadastro(cadastro_usuarios)
 
     print()
     print(colored("=== Usuário criado com sucesso! ===", 'light_yellow'))
@@ -259,8 +276,10 @@ def lista_usuarios(cadastro_usuarios):
 
     # Verifica se a lista está vazia
     if len(cadastro_usuarios) == 0:
-        print('\nNao existe usuários cadastrados!\n') 
+        print('\nNao existe usuários cadastrados!\n')
+        
     else:
+        cadastro_usuarios = load_usuarios()
         # Itera sobre a lista de cadastro_usuários
         for usuario in cadastro_usuarios:
             # Itera sobre o dicionário do usuário para imprimir a chave e o valor.
@@ -315,7 +334,7 @@ def cadastro_conta(cadastro_usuarios, cadastro_contas):
     for usuario in cadastro_usuarios:
         if cpf_usuario == usuario['cpf']:
             cadastro_contas.append({'agencia': AGENCIA, 'conta': conta, 'usuario': cpf_usuario})
-            
+
             # Mensagem informando que a conta foi criada com sucesso
             print()
             print(colored('=== Conta criada com sucesso! ===', 'light_green'))
@@ -428,6 +447,102 @@ def is_numeric(num, tamanho = 11):
         # Caso a string não possua apenas caracteres numéricos, exibe uma mensagem de erro e aguarda meio segundo
         print("Somente números devem ser inseridos. Tente novamente.")  
         sleep(.5)
+
+
+def grava_cadastro(cadastro_usuarios):
+    """
+    Grava o cadastro de usuários em um arquivo JSON.
+
+    Args:
+        cadastro_usuarios (dict): Um dicionário contendo as informações dos usuários.
+
+    Returns:
+        None
+    """
+    # Abre o arquivo JSON em modo de escrita (write)
+    with open('cadastro_de_usuarios.json', 'w') as cadastro:
+        # Grava o dicionário no arquivo em formato JSON
+        json.dump(cadastro_usuarios, cadastro)
+
+
+def load_usuarios():
+    """
+    Carrega o cadastro de usuários de um arquivo JSON.
+
+    Returns:
+        dict: Um dicionário contendo as informações dos usuários.
+    """
+    #A função load_usuarios carrega o conteúdo do arquivo JSON, 
+    try:
+        # Abre o arquivo JSON em modo de leitura (read)
+        with open('cadastro_de_usuarios.json', 'r') as cadastro:
+            # Lê o conteúdo do arquivo e carrega em um objeto Python
+            cadastro_usuarios = json.load(cadastro)
+    #caso o arquivo não exista ou esteja vazio, retorna uma lista vazia. 
+    except FileNotFoundError:
+        cadastro_usuarios = []
+        
+
+        #retorna o cadastro em objeto Python.    
+    return cadastro_usuarios
+
+
+def exclui_cadastro():
+    """
+    Função que permite excluir um cadastro de usuário a partir do CPF.
+
+    Args:
+        cadastro_usuarios (list): lista contendo um dicionário para cada cadastro de usuário.
+
+    Returns:
+        None.
+
+    """
+    # Solicita o CPF do usuário a ser excluído.
+    while True:
+        print()
+        cpf = input(colored("Informe o CPF para a exclusão (somente números): ", 'light_cyan')).strip()
+
+        # Verifica se o usuário deseja voltar para o menu principal digitando 0 e apertando enter.
+        if volta_menu(cpf):
+            return
+
+        # Verifica se o CPF informado contém apenas caracteres numéricos e tem 11 dígitos.
+        if is_numeric(cpf, 11):
+            break
+
+    # Carrega os dados do arquivo JSON.
+    with open('cadastro_de_usuarios.json', 'r') as cadastro:
+        cadastro_usuarios = json.load(cadastro)
+
+    # Formata o CPF para garantir que ele tenha o formato correto.
+    cpf = format_cpf(cpf)
+
+    # Busca o cadastro do usuário pelo CPF e o exclui da lista, se encontrado.
+    for usuario in cadastro_usuarios:
+        if usuario['cpf'] in cpf:
+            nome = usuario['nome']
+            cadastro_usuarios.remove(usuario)
+            print()
+            print(colored(f'O Sr(a) {nome} que possui o CPF {cpf} foi excluído com sucesso!', 'light_yellow'))
+            sleep(1)
+            # Salva as alterações no arquivo JSON.
+            with open('cadastro_de_usuarios.json', 'w') as cadastro:
+                json.dump(cadastro_usuarios, cadastro)
+            return
+
+    # Caso o CPF não seja encontrado na lista de usuários, exibe uma mensagem de erro.
+    print(colored(f'CPF {cpf} não encontrado na base de dados!', 'light_magenta'))
+    sleep(1)
+        
+            
+            
+        
+    
+
+            # Mensagem de erro caso o CPF não esteja cadastrado
+        
+
 
 if __name__ == '__main__':
     #print(deposito())

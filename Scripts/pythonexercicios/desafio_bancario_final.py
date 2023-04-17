@@ -30,13 +30,11 @@
 # - lista_contas: exibe na tela a lista de contas cadastradas
 '''
 
-
 # Importa as funções "letreiro" e "letreiro_2" do arquivo "letreiro.py"
 from letreiro import letreiro, letreiro_2
 
 # Importa todas as funções do arquivo "funcoes_bancaria.py"
 from funcoes_bancaria import *
-
 # Limpa a tela do console
 limpa_tela()
 
@@ -52,16 +50,17 @@ menu = """
 [\033[33m2\033[0m] Sacar
 [\033[33m3\033[0m] Extrato
 [\033[1;33m4\033[0m] Cadastrar usuário
-[\033[33m5\033[0m] Cadastrar Conta Bancária
+[\033[33m5\033[0m] Cadastrar Conta Bancária  
 [\033[1;33m6\033[0m] Listar usuários
 [\033[1;33m7\033[0m] Listar Contas
+[\033[1;33m8\033[0m] Exclui usuário
 [\033[30m0\033[0m] Sair
 
 \033[36mEscolha uma opção =>\033[0m """
 
 # Cria duas listas vazias, "cadastro_usuarios" e "cadastro_contas"
-cadastro_usuarios, cadastro_contas = list(), list()
-
+cadastro_contas = list()
+cadastro_usuarios = load_usuarios()
 saldo = 0
 relacao_depositos, relacao_saques = '', ''
 limite = 500
@@ -99,6 +98,7 @@ while True:
     # Opção 5 - Cadastro de Conta Bancária
     elif opcao == 5:
         # Chama a função de cadastro de conta e passa as listas de usuários e contas como argumentos
+        
         cadastro_conta(cadastro_usuarios, cadastro_contas)
 
     # Opção 6 - Listagem de Usuários
@@ -110,6 +110,10 @@ while True:
     elif opcao == 7:
         # Chama a função de listagem de contas e passa a lista de contas como argumento
         lista_contas(cadastro_contas)
+    
+    elif opcao == 8:
+        # Chama a função de excluir usuario e passa a lista de cadastro como argumento
+        exclui_cadastro()
         
     # Opção 0 - Sair do programa
     elif opcao == 0:
