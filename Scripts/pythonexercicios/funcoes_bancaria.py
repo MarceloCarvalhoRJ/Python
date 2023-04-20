@@ -3,6 +3,7 @@ from termcolor import colored
 from datetime import date
 import json
 
+
 def limpa_tela():
     import os
     '''

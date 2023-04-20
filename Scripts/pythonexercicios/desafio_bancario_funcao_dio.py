@@ -17,7 +17,7 @@ relacao_depositos, relacao_saques = '', ''
 limite = 500
 numero_saques = 0
 vlr_saque = 0
-
+    
 while True:
 
     opcao = int(input(menu))
