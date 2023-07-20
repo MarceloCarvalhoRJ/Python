@@ -24,3 +24,6 @@ for pos, value in veiculos.items():  # 3 modo
     print(pos, ':', value)
 
 
+
+
+

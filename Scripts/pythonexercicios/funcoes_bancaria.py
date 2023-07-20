@@ -235,12 +235,12 @@ def cadastro_usuario(cadastro_usuarios):
             break
     #enquanto o usuario não inserir os 6 digitos da data de nascimento o loop continua.
     while True: 
-        data_nascimento = input(colored('Informe a data de nascimento (DDMMAA). ', 'light_cyan')).strip()
+        data_nascimento = input(colored('Informe a data de nascimento (DDMMAAAA). ', 'light_cyan')).strip()
 
         if volta_menu(data_nascimento):
             return
         #funcao para verificar se o input eh uma sequencia X digitos (tamanho) e se eh somente de numeros.
-        if is_numeric(data_nascimento, tamanho=6):  
+        if is_numeric(data_nascimento, tamanho=8):  
             break 
 
     while True:
