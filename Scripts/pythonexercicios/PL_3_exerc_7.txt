@@ -1,0 +1,11 @@
+Inicio exercicio 7
+
+horas_extras = int
+salario = real 
+sal_mensal = real
+
+saslario = 0
+horas_extras = 0
+
+repetir enquanto salario ou horas_extras <= 0
+    ler salario, horas_extras
